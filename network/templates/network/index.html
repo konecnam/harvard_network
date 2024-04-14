@@ -13,25 +13,16 @@
     </div>
     <input class="btn btn-primary" type="submit" value="Post">
 </form>
+<br>
+<h5>Posts:</h5>
 
-
-
-<!-- {% if message %}
-    <div>{{ message }}</div>
-{% endif %}
-
-<form action="{% url 'login' %}" method="post">
-    {% csrf_token %}
-    <div class="form-group">
-        <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+{% for post in posts %}
+    <div class="post">
+        <h6 class="author">{{post.author}}</h6>
+        <h6>{{post.information}}</h6>
+        <h6>{{post.date}}</h6>
     </div>
-    <div class="form-group">
-        <input class="form-control" type="password" name="password" placeholder="Password">
-    </div>
-    <input class="btn btn-primary" type="submit" value="Login">
-</form>
 
-Don't have an account? <a href="{% url 'register' %}">Register here.</a> -->
-
+{%endfor%}
 
 {% endblock %}

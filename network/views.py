@@ -11,12 +11,14 @@ from .models import Post
 def index(request):
     if request.method == "POST":
         new_post = request.POST["new_post"]
-        post = Post (information=new_post, author=request.user )
+        post = Post (information=new_post, author=request.user)
         post.save()
         return HttpResponseRedirect(reverse("index"))
 
     else:
-        return render(request, "network/index.html")
+        # request.method == "GET":
+        posts = Post.objects.all().order_by('-date')
+        return render (request, "network/index.html", {"posts": posts})
 
 
 def login_view(request):
