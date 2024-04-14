@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "network",
+            "database": "${workspaceFolder:harvard_network}/db.sqlite3"
+        }
+    ]
+}
