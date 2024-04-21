@@ -17,12 +17,48 @@
 <h5>Posts:</h5>
 
 {% for post in posts %}
-    <div class="post">
-        <h6 class="author">{{post.author}}</h6>
-        <h6>{{post.information}}</h6>
-        <h6>{{post.date}}</h6>
-    </div>
+<div class="post">
+    <h6 class="author">{{post.author}}</h6>
+    <h6>{{post.information}}</h6>
+    <h6>{{post.date}}</h6>
+    <span data-post-id="{{post.id}}" class="heart" onclick="likes(this)">
+        {% if not user in post.likes.all %}
+            🖤
+        {% else %}
+            ❤️
+        {% endif %}
+        </span>
+    <span id="likes-{{post.id}}">{{post.likes.all|length}}</span>
 
+</div>
 {%endfor%}
+
+{% csrf_token %}
+<script>
+    function likes(heart) {
+        const csfr_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+        const liked_post_id = heart.getAttribute('data-post-id');
+        const data = { post_id: liked_post_id };
+        fetch("{% url 'like' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csfr_token
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+            .then(result => {
+                document.querySelector(`#likes-${liked_post_id}`).innerHTML = result.count_likes;
+            });
+
+        if (heart.innerHTML === '❤️') {
+            heart.innerHTML = '🖤'; // změníme na černé srdíčko
+        } else {
+            heart.innerHTML = '❤️'; // změníme na červené srdíčko
+        }
+    }
+</script>
+
 
 {% endblock %}

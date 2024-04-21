@@ -6,3 +6,8 @@
 .author {
     font-weight: bold;
 }
+.heart {
+    cursor: pointer;
+    font-size: 24px; /* Velikost srdíčka */
+    color: red; /* Barva srdíčka */
+}
