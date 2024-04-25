@@ -1,26 +1,15 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-<h2>All Posts</h2>
+<h2>User: {{ user.username }}</h2>
 <br>
-<h5>New posts</h5>
+<h5>Followers: 0</h5>
+<h5>Following: 0</h5>
 
-<form action="{% url 'index' %}" method="post">
-    {% csrf_token %}
-    <div class="form-group">
-        <textarea autofocus class="form-control" type="text" name="new_post" placeholder="new_post">
-    </textarea>
-    </div>
-    <input class="btn btn-primary" type="submit" value="Post">
-</form>
-<br>
-<h5>Posts:</h5>
-
+<h5>His posts:</h5>
 {% for post in posts %}
 <div class="post">
-    <h6 class="author"> 
-        <a href="{% url 'profile' post.author %}"><strong>{{ post.author}}</strong></a>
-    </h6>
+    <h6 class="author">{{post.author}}</h6>
     <h6>{{post.information}}</h6>
     <h6>{{post.date}}</h6>
     <span data-post-id="{{post.id}}" class="heart" onclick="likes(this)">

@@ -21,13 +21,6 @@ def index(request):
         posts = Post.objects.all().order_by('-date')
         return render (request, "network/index.html", {"posts": posts})
     
-# def is_liked(likes, user):
-#       #vybiram vsechny likes
-#     for like in likes:
-#         if user.username == like.user.username:
-#             return True
-#     return False
-
     
 def like(request):
     if request.method == "POST":
@@ -39,6 +32,12 @@ def like(request):
         else:
             post.likes.remove(request.user)
     return JsonResponse({'count_likes':len(post.likes.all())}, status=200)
+
+def profile(request,author):
+    # author = Post.objects.filter(author=author)
+    posts = Post.objects.filter(author__username=author).order_by('-date')
+    return render(request, "network/profile.html", {"posts": posts})
+
     
 
 def login_view(request):
