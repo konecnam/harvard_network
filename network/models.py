@@ -3,7 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    followers = models.ManyToManyField("self", symmetrical=False)
 
 class Post(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -11,6 +11,7 @@ class Post(models.Model):
     information = models.CharField(max_length=1024)  
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     likes = models.ManyToManyField(User)
+
 
 # class Like(models.Model):
 #     id = models.IntegerField(primary_key=True)

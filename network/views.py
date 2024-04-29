@@ -35,11 +35,36 @@ def like(request):
 
 def profile(request,author):
     # author = Post.objects.filter(author=author)
+
     posts = Post.objects.filter(author__username=author).order_by('-date')
-    return render(request, "network/profile.html", {"posts": posts})
+    user_all = User.objects.get(username=author)
+    return render(request, "network/profile.html", {
+        "posts": posts, 
+        "username_1":author,  
+        "user_all":user_all
+        })
+
+
+def follower(request):
+    if request.method == "POST":
+        user_name = request.POST["username"]
+        user_all = User.objects.get(username=user_name)
+        if request.user != user_all:
+            if not request.user in user_all.followers.all():
+                user_all.followers.add(request.user)
+            else:
+                user_all.followers.remove(request.user)
+        
+    return HttpResponseRedirect(reverse("profile", kwargs={"author": user_name}))
+
+def following_page(request):
+    following_users = request.user.user_set.all()
+    # Filtrování příspěvků, kde autor je mezi sledujícími uživateli
+    following_posts = Post.objects.filter(author__in=following_users)
+    # Vykreslení šablony s filtrovanými příspěvky
+    return render(request, 'network/following_page.html', {'posts': following_posts})
 
     
-
 def login_view(request):
     if request.method == "POST":
 

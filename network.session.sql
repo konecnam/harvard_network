@@ -1,0 +1,1 @@
+delete FROM network_user_followers 
