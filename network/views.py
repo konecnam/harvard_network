@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 from .models import User
 from .models import Post
@@ -15,11 +16,14 @@ def index(request):
         post = Post (information=new_post, author=request.user)
         post.save()
         return HttpResponseRedirect(reverse("index"))
-
     else:
-        # request.method == "GET":
         posts = Post.objects.all().order_by('-date')
-        return render (request, "network/index.html", {"posts": posts})
+        paginator = Paginator(posts, 10)  
+
+        page_number = request.GET.get("page", 1)
+        page_obj = paginator.get_page(page_number)
+        list_stranek = [i for i in range(1, paginator.num_pages+1)]
+        return render (request, "network/index.html", {"posts": page_obj, "pages":list_stranek})
     
     
 def like(request):
@@ -38,11 +42,18 @@ def profile(request,author):
 
     posts = Post.objects.filter(author__username=author).order_by('-date')
     user_all = User.objects.get(username=author)
-    return render(request, "network/profile.html", {
-        "posts": posts, 
+    paginator = Paginator(posts, 10) 
+    page_number = request.GET.get("page", 1) 
+    page_obj = paginator.get_page(page_number)
+    list_stranek = [i for i in range(1, paginator.num_pages+1)]
+    return render (request, "network/profile.html", {
+        "posts": page_obj,  
         "username_1":author,  
-        "user_all":user_all
+        "user_all":user_all, 
+        "pages":list_stranek
         })
+    
+
 
 
 def follower(request):
@@ -62,7 +73,15 @@ def following_page(request):
     # Filtrování příspěvků, kde autor je mezi sledujícími uživateli
     following_posts = Post.objects.filter(author__in=following_users)
     # Vykreslení šablony s filtrovanými příspěvky
-    return render(request, 'network/following_page.html', {'posts': following_posts})
+    paginator = Paginator(following_posts, 10)  
+
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+    list_stranek = [i for i in range(1, paginator.num_pages+1)]
+    return render (request, "network/following_page.html", {
+        "posts": page_obj, 
+        "pages":list_stranek
+        })
 
     
 def login_view(request):
