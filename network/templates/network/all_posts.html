@@ -6,6 +6,7 @@
 
 {% endblock %}
 
+
 {% for post in posts %}
 <div class="post">
     <h6 class="author"> 
@@ -24,6 +25,10 @@
 
 </div>
 {%endfor%}
+
+{% block pagination %}
+{% endblock %}
+
 
 {% csrf_token %}
 <script>
