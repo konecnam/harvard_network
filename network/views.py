@@ -83,6 +83,16 @@ def following_page(request):
         "pages":list_stranek
         })
 
+def search_page(request):
+    search_term = request.GET.get("new_search", '').strip()
+    posts = Post.objects.filter(information__icontains = search_term).order_by('-date')
+    paginator = Paginator(posts, 10)  
+    
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+    list_stranek = [i for i in range(1, paginator.num_pages+1)]
+    return render (request, "network/search_page.html", {"posts": page_obj, "pages":list_stranek, "search_term":search_term})
+
     
 def login_view(request):
     if request.method == "POST":

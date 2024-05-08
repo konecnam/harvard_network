@@ -8,28 +8,33 @@
 {% endblock %}
 
 {% block pagination %}
+{% if not posts %}
+<h3>No post found</h3>
 
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
-      <li class="page-item">
-        {% if posts.has_previous %}
-            <a class="page-link" href="{% url 'following_page' %}?page={{ posts.previous_page_number }}" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-            </a>   
-        {% endif %} 
-      </li>
-      {% for page_number in pages %}
-      <li class="page-item"><a class="page-link" href="{% url 'following_page' %}?page={{page_number }}">{{page_number}}</a></li>
-      {% endfor %}
-      <li class="page-item">
-        {% if posts.has_next %}
-            <a class="page-link" href="{% url 'following_page' %}?page={{ posts.next_page_number }}" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
-        {% endif %}
-        </a>
-      </li>
-    </ul>
-  </nav>
+
+{% else %}
+  <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+          {% if posts.has_previous %}
+              <a class="page-link" href="{% url 'following_page' %}?page={{ posts.previous_page_number }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+              </a>   
+          {% endif %} 
+        </li>
+        {% for page_number in pages %}
+        <li class="page-item"><a class="page-link" href="{% url 'following_page' %}?page={{page_number }}">{{page_number}}</a></li>
+        {% endfor %}
+        <li class="page-item">
+          {% if posts.has_next %}
+              <a class="page-link" href="{% url 'following_page' %}?page={{ posts.next_page_number }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+          {% endif %}
+          </a>
+        </li>
+      </ul>
+    </nav>
+{% endif %}
 
 {% endblock %}
 
