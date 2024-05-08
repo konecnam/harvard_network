@@ -1,0 +1,50 @@
+{% extends "network/all_posts.html" %}
+
+{% block all_posts %}
+<h4>Search</h4>
+<br>
+
+<form action="{% url 'search_page' %}" method="get">
+    <div class="form-group">
+        <textarea autofocus class="form-control" type="text" name="new_search" placeholder="new_search">
+    </textarea>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Search">
+    
+</form>
+<br>
+<h5>Posts:</h5>
+
+
+{% endblock %}
+{% block pagination %}
+
+{% if not posts %}
+<h3>No post found!</h3>
+
+
+{% else %}
+  <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item">
+          {% if posts.has_previous %}
+              <a class="page-link" href="{% url 'search_page' %}?page={{ posts.previous_page_number }}&new_search={{search_term}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+              </a>   
+          {% endif %} 
+        </li>
+        {% for page_number in pages %}
+        <li class="page-item"><a class="page-link" href="{% url 'search_page' %}?page={{page_number }}&new_search={{search_term}}">{{page_number}}</a></li>
+        {% endfor %}
+        <li class="page-item">
+          {% if posts.has_next %}
+              <a class="page-link" href="{% url 'search_page' %}?page={{ posts.next_page_number }}&new_search={{search_term}}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+          {% endif %}
+          </a>
+        </li>
+      </ul>
+    </nav>
+{% endif %} 
+
+{% endblock %}
