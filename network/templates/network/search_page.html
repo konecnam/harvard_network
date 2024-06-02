@@ -1,7 +1,7 @@
 {% extends "network/all_posts.html" %}
 
 {% block all_posts %}
-<h4>Search</h4>
+<h4 id="search">Search</h4>
 <br>
 
 <form action="{% url 'search_page' %}" method="get">
@@ -20,7 +20,7 @@
 {% block pagination %}
 
 {% if not posts %}
-<h3>No post found!</h3>
+<h3 id="no_post">No post found!</h3>
 
 
 {% else %}
