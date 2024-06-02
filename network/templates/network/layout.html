@@ -24,13 +24,13 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'following_page' %}">Following</a>
+                        <a id="following_id" class="nav-link" href="{% url 'following_page' %}">Following</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'search_page' %}">Search</a>
+                        <a id="search_id" class="nav-link" href="{% url 'search_page' %}">Search</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                        <a id="log_out_id" class="nav-link" href="{% url 'logout' %}">Log Out</a>
                     </li>
                     
                 {% else %}

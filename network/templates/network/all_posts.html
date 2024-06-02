@@ -10,10 +10,15 @@
 {% for post in posts %}
 <div class="post">
     <h6 class="author"> 
-        <a href="{% url 'profile' post.author %}"><strong>{{ post.author}}</strong></a>
+        <a href="{% url 'profile' post.author %}"><strong class = "post_author">{{ post.author}}</strong></a>
     </h6>
-    <h6>{{post.information}}</h6>
+    <h6 class ="post_information">{{post.information}}</h6>
     <h6>{{post.date}}</h6>
+    {% if post.author == user %}
+        <input class="btn btn-primary" type="submit" value="Edit">
+    {% endif %}
+
+    
     <span data-post-id="{{post.id}}" class="heart" onclick="likes(this)">
         {% if not user in post.likes.all %}
             🖤
@@ -21,7 +26,7 @@
             ❤️
         {% endif %}
         </span>
-    <span id="likes-{{post.id}}">{{post.likes.all|length}}</span>
+    <span class = "likes" id="likes-{{post.id}}">{{post.likes.all|length}}</span>
 
 </div>
 {%endfor%}

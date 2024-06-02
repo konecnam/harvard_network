@@ -1,10 +1,11 @@
 {% extends "network/all_posts.html" %}
 
 {% block all_posts %}
-<h2>All Posts</h2>
+<h2 id="all_posts">All Posts</h2>
 <br>
-<h5>New posts</h5>
+<h5 id="new_posts_title">New posts</h5>
 
+{% if user.is_authenticated %}
 <form action="{% url 'index' %}" method="post">
     {% csrf_token %}
     <div class="form-group">
@@ -12,10 +13,10 @@
     </textarea>
     </div>
     <input class="btn btn-primary" type="submit" value="Post">
-    
 </form>
 <br>
-<h5>Posts:</h5>
+{% endif %}
+<h5 id="all_posts_title">Posts:</h5>
 
 
 {% endblock %}
@@ -48,17 +49,17 @@
       <ul class="pagination">
         <li class="page-item">
           {% if posts.has_previous %}
-              <a class="page-link" href="{% url 'index' %}?page={{ posts.previous_page_number }}" aria-label="Previous">
+              <a id="previous" class="page-link" href="{% url 'index' %}?page={{ posts.previous_page_number }}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
               </a>   
           {% endif %} 
         </li>
         {% for page_number in pages %}
-        <li class="page-item"><a class="page-link" href="{% url 'index' %}?page={{page_number }}">{{page_number}}</a></li>
+        <li class="page-item"><a id="page-link-{{page_number}}"class="page-link" href="{% url 'index' %}?page={{page_number }}">{{page_number}}</a></li>
         {% endfor %}
         <li class="page-item">
           {% if posts.has_next %}
-              <a class="page-link" href="{% url 'index' %}?page={{ posts.next_page_number }}" aria-label="Next">
+              <a id="next" class="page-link" href="{% url 'index' %}?page={{ posts.next_page_number }}" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
           {% endif %}
           </a>
