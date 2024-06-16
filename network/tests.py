@@ -221,14 +221,73 @@ class MyUserIn(StaticLiveServerTestCase):
         self.selenium.find_element(By.ID, "log_out_id").click()
         all_posts_h2 = self.selenium.find_element(By.ID, "all_posts")
         self.assertEqual(all_posts_h2.text, "All Posts")
+
+    def test_edit(self):
+        self.login()
+        self.selenium.get(f"{self.live_server_url}")
+        post_input = self.selenium.find_element(By.XPATH, "/html/body/div/form/div/textarea")
+        post_input.send_keys("novy katalog se povedl")
+        self.selenium.find_element(By.XPATH, '//input[@value="Post"]').click()
+        self.selenium.find_element(By.XPATH, '/html/body/div/div[1]/div[1]/button').click()
+        post_input_edit = self.selenium.find_element(By.XPATH, '/html/body/div/div[1]/div[2]/textarea')
+        post_input_edit.clear()
+        post_input_edit.send_keys("novy katalog se povedl, velmi hezky vypada")
+        self.selenium.find_element(By.XPATH, '/html/body/div/div[1]/div[2]/button[1]').click()
+        edit_post = self.selenium.find_element(By.XPATH, '/html/body/div/div[1]/div[1]/h6[1]')
+        self.assertEqual(edit_post.text, "novy katalog se povedl, velmi hezky vypada")
         
-                        
+
+    def test_cancel(self):
+        self.login()
+        self.selenium.get(f"{self.live_server_url}")
+        post_input = self.selenium.find_element(By.XPATH, "/html/body/div/form/div/textarea")
+        post_input.send_keys("novy katalog se povedl")
+        self.selenium.find_element(By.XPATH, '//input[@value="Post"]').click()
+        self.selenium.find_element(By.XPATH, '/html/body/div/div[1]/div[1]/button').click()
+        self.selenium.find_element(By.XPATH, '/html/body/div/div[1]/div[2]/button[2]').click()
+        no_edit_post = self.selenium.find_element(By.XPATH, '/html/body/div/div[1]/div[1]/h6[1]')
+        self.assertEqual(no_edit_post.text, "novy katalog se povedl")
+        button_edit = self.selenium.find_element(By.XPATH, '/html/body/div/div[1]/div[1]/button')
+        self.assertEqual(button_edit.text, "Edit")
+
+
+    def test_two_no_edit(self):
+        self.login()
+        self.selenium.get(f"{self.live_server_url}")
+        post_input = self.selenium.find_element(By.XPATH, "/html/body/div/form/div/textarea")
+        post_input.send_keys("novy katalog se povedl")
+        self.selenium.find_element(By.XPATH, '//input[@value="Post"]').click()
+        self.selenium.find_element(By.XPATH, '//*[@id="log_out_id"]').click()
+
+        user = User.objects.create_superuser(username='salina', password='bluetram', email='bluetram@tram.com', is_active=True)
+        user.save()
+        self.selenium.get(f"{self.live_server_url}/login")
+        username_input = self.selenium.find_element(By.NAME, "username")
+        username_input.send_keys("salina")
+        password_input = self.selenium.find_element(By.NAME, "password")
+        password_input.send_keys("bluetram")
+        self.selenium.find_element(By.XPATH, '//input[@value="Login"]').click()
+
+        no_edit_button = len(self.selenium.find_elements(By.XPATH, '/html/body/div/div[1]/div[1]/button')) > 0
+        self.assertFalse (no_edit_button)
+
+    def test_two_no_edit2(self):
+        user = User.objects.create_superuser(username='salina', password='bluetram', email='bluetram@tram.com', is_active=True)
+        user.save()
+        post = Post (information='Novy post', author=user)
+        post.save()
+
+        self.login()   
+        all_edit_buttons = self.selenium.find_elements(By.XPATH, '/html/body/div/div[1]/div[1]/button')
+        self.assertTrue(len(all_edit_buttons) == 0)
+        
     def test_following(self):
         self.login()
         self.selenium.get(f"{self.live_server_url}")
         self.selenium.find_element(By.XPATH, '//*[@id="following_id"]').click()
         following_h2 = self.selenium.find_element(By.XPATH, '//*[@id="following"]')
         self.assertEqual(following_h2.text, "Following")
+    
 
     def test_following_two(self):
         user_two = User.objects.create_superuser(username='kachna', password='blueduck', email='duck@test.com', is_active=True)
@@ -267,6 +326,7 @@ class MyUserIn(StaticLiveServerTestCase):
         self.assertEqual(profile_following_count.text, "Following: 0")
         profile_followers_count_2 = self.selenium.find_element(By.XPATH,'/html/body/div/h3[1]')
         self.assertEqual(profile_followers_count_2.text, "Followers: 0")
+    
 
 
 
