@@ -37,6 +37,16 @@ def like(request):
             post.likes.remove(request.user)
     return JsonResponse({'count_likes':len(post.likes.all())}, status=200)
 
+def save(request):
+    if request.method == "POST":
+        data = json.loads(request.body)  # Převedení JSON dat na Python slovník
+        post_id = data.get('post_id')
+        post = Post.objects.get(id=post_id)
+        post.information = data.get('update_post')
+        post.save({})
+    return JsonResponse({'upraveny_post':post.information}, status=200)
+
+ 
 def profile(request,author):
     # author = Post.objects.filter(author=author)
 

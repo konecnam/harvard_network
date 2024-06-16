@@ -12,11 +12,22 @@
     <h6 class="author"> 
         <a href="{% url 'profile' post.author %}"><strong class = "post_author">{{ post.author}}</strong></a>
     </h6>
-    <h6 class ="post_information">{{post.information}}</h6>
-    <h6>{{post.date}}</h6>
-    {% if post.author == user %}
-        <input class="btn btn-primary" type="submit" value="Edit">
-    {% endif %}
+    <div id="read_div_{{post.id}}" style="display: block;">
+        <h6 id="h6_post_information{{post.id}}" class ="post_information">{{post.information}}</h6>
+        <h6>{{post.date}}</h6>
+        {% if post.author == user %}
+            <button class="btn btn-primary"  data-post-id="{{post.id}}" onclick="edit_status(this)">Edit</button>
+        {% endif %}
+    </div>
+    <div id="save_div_{{post.id}}" style="display: none;">  
+        <textarea id= "textarea_id_{{post.id}}" autofocus class="form-control" name="edit_post" placeholder="">
+            {{post.information}}
+        </textarea>  
+        {% if post.author == user %}
+            <button class="btn btn-primary"  data-post-id="{{post.id}}" onclick="save_status(this)">Save</button>
+            <button class="btn btn-primary"  data-post-id="{{post.id}}" onclick="cancel_status(this)">Cancel</button>
+        {% endif %}
+    </div>
 
     
     <span data-post-id="{{post.id}}" class="heart" onclick="likes(this)">
@@ -37,6 +48,43 @@
 
 {% csrf_token %}
 <script>
+    function edit_status(button) {
+        const post_id = button.getAttribute('data-post-id');
+        document.querySelector(`#save_div_${post_id}`).style.display = 'block';
+        document.querySelector(`#read_div_${post_id}`).style.display = 'none';
+        
+    }
+
+    function cancel_status(button){
+        const post_id = button.getAttribute('data-post-id');
+        document.querySelector(`#save_div_${post_id}`).style.display = 'none';
+        document.querySelector(`#read_div_${post_id}`).style.display = 'block';
+
+    }
+
+    function save_status(button){
+        const post_id = button.getAttribute('data-post-id');
+        const x = document.querySelector(`#textarea_id_${post_id}`).value;
+        const csfr_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+        const data = { post_id: post_id, update_post: x };
+        fetch("{% url 'save' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csfr_token
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+                document.querySelector(`#h6_post_information${post_id}`).innerHTML = result.upraveny_post;
+            });
+        document.querySelector(`#save_div_${post_id}`).style.display = 'none';
+        
+        document.querySelector(`#read_div_${post_id}`).style.display = 'block';
+
+    }
+
     function likes(heart) {
         const csfr_token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
         const liked_post_id = heart.getAttribute('data-post-id');
