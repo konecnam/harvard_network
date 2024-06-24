@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.db.models.functions import Lower
 
 from .models import User
 from .models import Post
@@ -154,3 +155,18 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+    
+# def users_page(request):
+#     # return render(request, "network/users_page.html")
+
+def users_page(request):
+    query = request.GET.get('new_search', '')
+    if query:
+        users = User.objects.filter(username__icontains=query).annotate(
+            lower_username=Lower('username')
+        ).order_by('lower_username')
+    else:
+        users = User.objects.all().annotate(
+            lower_username=Lower('username')
+        ).order_by('lower_username')
+    return render(request, 'network/users_page.html', {'users': users, 'query': query})

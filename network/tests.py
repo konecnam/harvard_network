@@ -326,6 +326,73 @@ class MyUserIn(StaticLiveServerTestCase):
         self.assertEqual(profile_following_count.text, "Following: 0")
         profile_followers_count_2 = self.selenium.find_element(By.XPATH,'/html/body/div/h3[1]')
         self.assertEqual(profile_followers_count_2.text, "Followers: 0")
+
+    def test_search_users(self):
+        self.login()
+        self.selenium.get(f"{self.live_server_url}")
+        self.selenium.find_element(By.XPATH, '//*[@id="users_page_id"]').click()
+        user_input = self.selenium.find_element(By.XPATH, "/html/body/div/form/div/textarea")
+        user_input.send_keys("hhh")
+        self.selenium.find_element(By.XPATH, '/html/body/div/form/input').click()
+        no_user_found = self.selenium.find_element(By.XPATH, '//*[@id="no_user"]')
+        self.assertEqual(no_user_found.text, "No user found")
+
+    def test_next_user_no_search(self):
+        user_autobus = User.objects.create_superuser(username='autobus', password='bluebus', email='bluebus@tram.com', is_active=True)
+        user_autobus.save()
+
+        user_American = User.objects.create_superuser(username='American', password='amarican', email='american@tram.com', is_active=True)
+        user_American.save()
+
+        user_Salina = User.objects.create_superuser(username='Salina', password='bluetram', email='bluetram@tram.com', is_active=True)
+        user_Salina.save()
+
+        self.login()
+        self.selenium.get(f"{self.live_server_url}")
+        self.selenium.find_element(By.XPATH, '//*[@id="users_page_id"]').click()
+
+        user_Amarican = self.selenium.find_element(By.XPATH, '/html/body/div/ul/li[1]/a/strong')
+        self.assertEqual(user_Amarican.text, "American")
+
+        user_auto = self.selenium.find_element(By.XPATH, '/html/body/div/ul/li[2]/a/strong')
+        self.assertEqual(user_auto.text, "auto")
+
+        user_autobus = self.selenium.find_element(By.XPATH, '/html/body/div/ul/li[3]/a/strong')
+        self.assertEqual(user_autobus.text, "autobus")
+
+        user_salina = self.selenium.find_element(By.XPATH, '/html/body/div/ul/li[4]/a/strong')
+        self.assertEqual(user_salina.text, "Salina")
+
+
+    def test_next_user_search(self):
+        user_Autobus = User.objects.create_superuser(username='Autobus', password='bluebus', email='bluebus@tram.com', is_active=True)
+        user_Autobus.save()
+
+        user_American = User.objects.create_superuser(username='American', password='amarican', email='american@tram.com', is_active=True)
+        user_American.save()
+
+        user_salina = User.objects.create_superuser(username='salina', password='bluetram', email='bluetram@tram.com', is_active=True)
+        user_salina.save()
+
+        self.login()
+        self.selenium.get(f"{self.live_server_url}")
+        self.selenium.find_element(By.XPATH, '//*[@id="users_page_id"]').click()
+        user_input = self.selenium.find_element(By.XPATH, "/html/body/div/form/div/textarea")
+        user_input.send_keys("au")
+        self.selenium.find_element(By.XPATH, '/html/body/div/form/input').click()
+
+        user_auto = self.selenium.find_element(By.XPATH, '/html/body/div/ul/li[1]/a/strong')
+        self.assertEqual(user_auto.text, "auto")
+
+        user_Autobus = self.selenium.find_element(By.XPATH, '/html/body/div/ul/li[2]/a/strong')
+        self.assertEqual(user_Autobus.text, "Autobus")
+
+        
+
+
+
+
+
     
 
 

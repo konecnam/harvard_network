@@ -13,5 +13,6 @@ urlpatterns = [
     path("following", views.follower, name='following'),
     path ("following_page", views.following_page, name='following_page'),
     path ("search_page", views.search_page, name= 'search_page'),
-    path("save", views.save, name='save')
+    path("save", views.save, name='save'), 
+    path("users_page", views.users_page, name='users_page')
 ]
