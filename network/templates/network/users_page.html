@@ -1,0 +1,29 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+<h4 id="search">Search Users</h4>
+<br>
+
+<form action="{% url 'users_page' %}" method="get">
+    <div class="form-group">
+        <textarea autofocus class="form-control" type="text" name="new_search" placeholder="Search Users">{{ query }}</textarea>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Search">
+</form>
+<br>
+
+{% if users %}
+    <ul class="user-list">
+        {% for user in users %}
+            <li class="user-item">
+                <a href="{% url 'profile' user.username %}"><strong class="post_author">{{ user.username }}</strong></a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <h3 id="no_user">No user found</h3>
+{% endif %}
+
+{% endblock %}
+
