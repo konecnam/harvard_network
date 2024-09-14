@@ -98,7 +98,6 @@ def search_page(request):
     search_term = request.GET.get("new_search", '').strip()
     posts = Post.objects.filter(information__icontains = search_term).order_by('-date')
     paginator = Paginator(posts, 10)  
-    
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
     list_stranek = [i for i in range(1, paginator.num_pages+1)]
